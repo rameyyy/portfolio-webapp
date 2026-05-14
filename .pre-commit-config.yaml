@@ -1,0 +1,55 @@
+# Pre-commit hooks configuration
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Python linting & formatting (for jobs/)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        name: Ruff linter (Python)
+        args: [--fix]
+        files: ^jobs/.*\.py$
+
+      - id: ruff-format
+        name: Ruff formatter (Python)
+        files: ^jobs/.*\.py$
+
+  # TypeScript/JavaScript linting (for web/)
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint (TypeScript/JavaScript)
+        entry: bash -c 'cd web && npm run lint'
+        language: system
+        files: ^web/.*\.(ts|tsx|js|jsx)$
+        pass_filenames: false
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: no-commit-to-branch
+        name: Prevent commits to main
+        args: [--branch, main]
+
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+
+      - id: end-of-file-fixer
+        name: Fix end of files
+
+      - id: check-yaml
+        name: Check YAML syntax
+        exclude: ^\.github/workflows/  # Skip if using special syntax
+
+      - id: check-added-large-files
+        name: Check for large files
+        args: [--maxkb=500]
+
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+
+      - id: mixed-line-ending
+        name: Check line endings
